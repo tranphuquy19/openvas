@@ -21,8 +21,5 @@ apt-get install -yq --no-install-recommends $PACKAGES
 #Clean up after apt
 rm -rf /var/lib/apt/lists/*
 
-
-
-
-
-
+echo "Install nodejs version 14"
+curl -sL https://deb.nodesource.com/setup_14.x | bash -

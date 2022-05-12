@@ -1,6 +1,6 @@
 # Stage 0: 
 # Start with ovasbase with running dependancies installed.
-FROM immauss/ovasbase:latest
+FROM openvasbase:latest AS base
 
 # Ensure apt doesn't ask any questions 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -34,12 +34,8 @@ COPY build.d/links.sh /build.d/
 RUN bash /build.d/links.sh
 
 # Stage 1: Start again with the ovasebase. Dependancies already installed
-FROM immauss/ovasbase:latest
-LABEL maintainer="scott@immauss.com" \
-      version="21.4.4-08" \
-      url="https://hub.docker.com/immauss/openvas" \
-      source="https://github.com/immauss/openvas"
-      
+FROM base as prod
+LABEL version="21.4.4-08"
       
 EXPOSE 9392
 ENV LANG=C.UTF-8
@@ -59,8 +55,8 @@ RUN bash /links.sh
 # Split these off in a new layer makes refresh builds faster.
 COPY update.ts /
 COPY build.rc /gvm-versions
-RUN curl -L --url https://www.immauss.com/openvas/base.sql.xz -o /usr/lib/base.sql.xz && \
-    curl -L --url https://www.immauss.com/openvas/var-lib.tar.xz -o /usr/lib/var-lib.tar.xz
+RUN curl -L --url https://nexus.dev.gosecure.ca/repository/raw-hosted/openvas/base.sql.xz -o /usr/lib/base.sql.xz && \
+    curl -L --url https://nexus.dev.gosecure.ca/repository/raw-hosted/openvas/var-lib2.tar.xz -o /usr/lib/var-lib.tar.xz
 # Make sure we didn't just pull zero length files 
 RUN bash -c " if [ $(ls -l /usr/lib/base.sql.xz | awk '{print $5}') -lt 30000 ]; then exit 1; fi " && \
     bash -c " if [ $(ls -l /usr/lib/var-lib.tar.xz | awk '{print $5}') -lt 30000 ]; then exit 1; fi "

@@ -3,6 +3,7 @@ services:
   openvas:
     ports:
       - "8080:9392"
+      - "9390:9390"
     environment:
       - "PASSWORD=admin"
       - "USERNAME=admin"
@@ -14,12 +15,13 @@ services:
       - "SKIPSYNC=true" # Skips the feed sync on startup.
       - "RESTORE=false"  # This probably not be used from compose... see docs.
       - "DEBUG=false"  # This will cause the container to stop and not actually start gvmd
-      - "HTTPS=false"  # wether to use HTTPS or not
+      - "HTTPS=true"  # wether to use HTTPS or not
       - "GMP=9390"    # to enable see docs
     volumes:
       - "openvas:/data"
     container_name: openvas
-    image: immauss/openvas:latest
+    image: openvas:21.4.4
+    # image: immauss/openvas:21.04.08
   scannable:
     image: immauss/scannable
     container_name: scannable

@@ -6,13 +6,16 @@ set -Eeuo pipefail
 echo "Building gsa"  
 cd /build
 GSA_VERSION=$(echo $gsa| sed "s/^v\(.*$\)/\1/")
-curl -f -L https://github.com/greenbone/gsa/archive/refs/tags/v$GSA_VERSION.tar.gz -o $gsa.tar.gz
+# curl -f -L https://github.com/greenbone/gsa/archive/refs/tags/v$GSA_VERSION.tar.gz -o $gsa.tar.gz
+curl -f -L https://api.github.com/repos/greenbone/gsa/tarball -o $gsa.tar.gz
+
+npm install -g yarn --force
 
 tar -xf $gsa.tar.gz
 ls -l
-cd /build/*/
-yarnpkg
-yarnpkg build
+cd greenbone-gsa-*
+yarn
+yarn build
 mkdir -p $INSTALL_PREFIX/share/gvm/gsad/web/
 cp -r build/* $INSTALL_PREFIX/share/gvm/gsad/web/
 
